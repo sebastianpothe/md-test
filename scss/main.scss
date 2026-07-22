@@ -1,3 +1,5 @@
+@use "sass:math";
+
 $ink: #151318;
 $paper: #ffffff;
 $pink: #d60080;
@@ -5,109 +7,127 @@ $violet: #4a04ff;
 $yellow: #d6d600;
 $white: #ffffff;
 
+@function strip-unit($value) {
+	@return math.div($value, $value * 0 + 1);
+}
+
+@function fluid-size($min-size, $max-size, $min-width: 375px, $max-width: 1440px) {
+	$slope: math.div(strip-unit($max-size) - strip-unit($min-size), strip-unit($max-width) - strip-unit($min-width));
+	$y-axis: strip-unit($min-size) - $slope * strip-unit($min-width);
+
+	@return clamp(#{$min-size}, calc(#{$y-axis}px + #{$slope * 100}vw), #{$max-size});
+}
+
 *,
 *::before,
 *::after {
-  box-sizing: border-box;
+	box-sizing: border-box;
 }
 
 html {
-  color: $ink;
-  background: $paper;
-  --graphic-scale: 1;
-  font-family:
-    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    sans-serif;
+	color: $ink;
+	background: $paper;
+	--graphic-scale: 1;
+	font-family:
+		Inter,
+		ui-sans-serif,
+		system-ui,
+		-apple-system,
+		BlinkMacSystemFont,
+		"Segoe UI",
+		sans-serif;
 }
 
 body {
-  min-width: 320px;
-  overflow-x: hidden;
-  color: $violet;
+	min-width: 320px;
+	overflow-x: hidden;
+	color: $violet;
 }
 
 img {
-  max-width: 100%;
-  display: block;
+	max-width: 100%;
+	display: block;
 }
 
 .page {
-  min-height: 400vh;
+	min-height: 400vh;
 }
 
 .pin-section {
-  min-height: 100vh;
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  background: $paper;
+	min-height: 100vh;
+	position: relative;
+	isolation: isolate;
+	overflow: hidden;
+	background: $paper;
 }
 
 .graphic-stack,
 .graphic-stack__layer {
-  position: absolute;
-  inset: 0;
+	position: absolute;
+	inset: 0;
 }
 
 .graphic-stack {
-  width: 100%;
-  height: 100%;
+	width: 100%;
+	height: 100%;
 }
 
 .graphic-stack__layer {
-  --mouse-x: 0px;
-  --mouse-y: 0px;
-  --scroll-x: 0px;
-  --scroll-y: 0px;
+	--mouse-x: 0px;
+	--mouse-y: 0px;
+	--scroll-x: 0px;
+	--scroll-y: 0px;
 
-  opacity: 0.9;
-  mix-blend-mode: multiply;
-  transform: translate(
-    calc(var(--scroll-x) + var(--mouse-x)),
-    calc(var(--scroll-y) + var(--mouse-y))
-  );
+	opacity: 0.9;
+	mix-blend-mode: multiply;
+	transform: translate(calc(var(--scroll-x) + var(--mouse-x)), calc(var(--scroll-y) + var(--mouse-y)));
 
-  svg {
-    width: 100%;
-    height: 100%;
-    display: block;
-    object-fit: cover;
-    transform: scale(var(--graphic-scale));
-    transform-origin: center;
-  }
+	svg {
+		width: 100%;
+		height: 100%;
+		display: block;
+		object-fit: cover;
+		transform: scale(var(--graphic-scale));
+		transform-origin: center;
+	}
 }
 
 .graphic-stack__layer--white {
-  opacity: 1;
-  mix-blend-mode: normal;
+	opacity: 1;
+	mix-blend-mode: normal;
 }
 
-.scroll-msg{
-  position: fixed;
-  aspect-ratio: 1;
-  display: grid;
-  align-content: center;
-  border-radius: 50%;
-  padding: 1em;
-  background-color: $violet;
-  right: 2em;
-  bottom: 2em;
-  z-index: 10;
-  color: white;
+.scroll-msg {
+	position: fixed;
+	aspect-ratio: 1;
+	display: grid;
+	align-content: center;
+	border-radius: 50%;
+	padding: 1em;
+	background-color: $violet;
+	right: 2em;
+	bottom: 2em;
+	z-index: 10;
+	color: white;
 }
-.intro-text{
-  position: absolute;
-  z-index: 10;
-  width: 50%;
-  padding: 2em;
-  background-color: #fff;
-  inset: 2em auto 2em 2em;
-  display: grid;
-  align-content: end;
-  clip-path: inset(100% 0 0 0);
-  will-change: clip-path;
+.intro-text {
+	font-size: fluid-size(48px, 80px);
+	position: absolute;
+	z-index: 10;
+	max-width: 10em;
+  // width: calc(100% - 4rem);
+	padding: 2rem;
+	background-color: #fff;
+	inset: 2rem;
+	display: grid;
+	align-content: space-between;
+	clip-path: inset(100% 0 0 0);
+	will-change: clip-path;
 }
-h1{
-  font-size: 80px;
-  margin: 0;
+h1 {
+	font-size: fluid-size(42px, 82px);
+	margin: 0;
+}
+.logo{
+  width: 250px;
 }

@@ -7,7 +7,7 @@ const introRevealEnd = 0.5;
 
 document.documentElement.style.setProperty("--graphic-scale", graphicScale);
 
-const mouseIntensity = 80;
+const mouseIntensity = 100;
 const mouseScrollActivationEnd = 0.12;
 const scrollMin = 30;
 const scrollMax = 100;

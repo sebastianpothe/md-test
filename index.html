@@ -1,37 +1,140 @@
 <!doctype html>
 <html lang="es">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>MD Site Scrolling effects</title>
-    <link rel="preconnect" href="https://cdn.jsdelivr.net" />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.css"
-    />
-    <link rel="stylesheet" href="css/main.css" />
-  </head>
-  <body>
-    
-    <main class="page">
-      
-      <section class="pin-section">
-        <div class="scroll-msg">    Scroll to proceed</div>
-        <div class="intro-text">
-          <img src="assets/logo.svg" alt="" class="logo">
-          <h1>A multidisciplinary design entity built for adaptive brands</h1>
-        </div>
-        <div class="graphic-stack" aria-hidden="true">
-          <div class="graphic-stack__layer graphic-stack__layer--violet"></div>
-          <div class="graphic-stack__layer graphic-stack__layer--pink"></div>
-          <div class="graphic-stack__layer graphic-stack__layer--yellow"></div>
-          <div class="graphic-stack__layer graphic-stack__layer--white"></div>
-        </div>
-      </section>
-    </main>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>MD Site Scrolling effects</title>
+		<link rel="preconnect" href="https://cdn.jsdelivr.net" />
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.css" />
+		<link rel="stylesheet" href="https://unpkg.com/lenis@1.3.25/dist/lenis.css" />
+		<link rel="stylesheet" href="https://use.typekit.net/jom1vrv.css" />
+		<link rel="stylesheet" href="css/main.css" />
+	</head>
+	<body>
+		<main class="page">
+			<section class="pin-section">
+				<div class="scroll-msg">Scroll required</div>
+				<div class="intro-text">
+					<img src="assets/logo.svg" alt="" class="logo" />
+					<h1>A multidisciplinary design entity built for adaptive brands</h1>
+				</div>
+				<div class="graphic-stack" aria-hidden="true">
+					<div class="graphic-stack__layer graphic-stack__layer--violet"></div>
+					<div class="graphic-stack__layer graphic-stack__layer--pink"></div>
+					<div class="graphic-stack__layer graphic-stack__layer--yellow"></div>
+					<div class="graphic-stack__layer graphic-stack__layer--white"></div>
+				</div>
+			</section>
 
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
-    <script src="js/main.js"></script>
-  </body>
+			<section class="cap-section bg-violet">
+				<div class="cap-heading">
+					<span>Plan</span>
+					<h2>
+						Standard protocols <br />
+						<strong>suspended</strong><br /><em>Direction pending discovery.</em>
+					</h2>
+				</div>
+				<div class="description">
+					<p>
+						Before production begins, we establish direction.This phase focuses on defining “the big
+						picture” (e.g. strategy, creative direction, and intent), so the work that follows has a clear
+						foundation. Whether you need brand strategy, campaign planning, or pre-production support, this
+						stage ensures priorities are aligned and decisions are made with purpose.
+					</p>
+				</div>
+				<ul class="service-grid">
+					<li>Brand Strategy</li>
+					<li>Creative Consulting</li>
+					<li>Brand Manifestos</li>
+					<li>Pre-Producting and Planning</li>
+				</ul>
+			</section>
+
+			<section class="image">
+				<div class="funfact">
+					<p>
+						Dandelions are more nutritious than most of the vegetables in your garden. They were named after
+						lions because their lion-toothed leaves healed so many ailments, great and small: baldness,
+						dandruff, toothache, sores, fevers, rotting gums, weakness, lethargy and depression. But it
+						wasn’t until the twentieth century was the underlying cause of many of these symptoms realized:
+						vitamin deficiencies. In eras when vitamin pills were unknown, vitamin deficiencies killed
+						millions. In its time, “scurvy” was as dreaded a word as AIDS is today. Data from the U.S.
+						Department of Agriculture reveal how dandelions probably helped alleviate many ailments: They
+						have more vitamin A than spinach, more vitamin C than tomatoes, and are a powerhouse of iron,
+						calcium and potassium.
+					</p>
+				</div>
+				<img
+					src="https://fastly.picsum.photos/id/239/2500/1500.jpg?hmac=XFU2yao2NjOCQO2dyOaljJ0SHTQLsfS6efmQogOjBw8"
+					alt=""
+				/>
+			</section>
+
+			<section class="cap-section bg-grey">
+				<div class="cap-heading">
+					<span>Plan</span>
+					<h2>
+						Ideas <strong>cleared for assembly.</strong> <br />
+						<em>Creation operating within scope.</em>
+					</h2>
+				</div>
+				<div class="description">
+					<p>
+						This is where we take approved ideas and turn them into tangible work (i.e. things you can see,
+						use, and experience). Whether it’s building a brand identity, crafting motion graphics, or
+						producing a full video campaign, this phase focuses on making the work and making it to client
+						standards. 
+					</p>
+				</div>
+				<ul class="service-grid">
+					<li>Brand Strategy</li>
+					<li>Creative Consulting</li>
+					<li>Brand Manifestos</li>
+					<li>Pre-Producting and Planning</li>
+				</ul>
+			</section>
+			<!-- https://picsum.photos/2500/1500 -->
+			<section class="image">
+				<div class="funfact">
+					<p>
+						Cyan ink is fundamentally the absence of red light in the subtractive CMYK color model used by
+						printers. While screens emit light (RGB), printers reflect it off white paper; cyan ink works by
+						absorbing red wavelengths and reflecting the remaining green and blue light, which the eye
+						perceives as cyan. This makes it the direct inverse of red, allowing printers to create a wider
+						and more accurate spectrum of colors than traditional red, yellow, and blue pigments.
+					</p>
+				</div>
+				<img
+					src="https://fastly.picsum.photos/id/1068/2500/1500.jpg?hmac=bit_7CTFtIRnkomIfEoy0EQ4p18u59mgkHEx3B5KZj4"
+					alt=""
+				/>
+			</section>
+
+			<section class="cap-section bg-black">
+				<div class="cap-heading">
+					<span>Experiment</span>
+					<h2>Experimental mode <br> <strong>activated</strong></h2>
+				</div>
+				<div class="description">
+					<p>
+						This is where we take approved ideas and turn them into tangible work (i.e. things you can see,
+						use, and experience). Whether it’s building a brand identity, crafting motion graphics, or
+						producing a full video campaign, this phase focuses on making the work and making it to client
+						standards. 
+					</p>
+				</div>
+				<ul class="service-grid">
+					<li>Brand Strategy</li>
+					<li>Creative Consulting</li>
+					<li>Brand Manifestos</li>
+					<li>Pre-Producting and Planning</li>
+				</ul>
+			</section>
+		</main>
+
+		<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+		<script src="https://unpkg.com/lenis@1.3.25/dist/lenis.min.js"></script>
+		<script src="js/main.js"></script>
+	</body>
 </html>

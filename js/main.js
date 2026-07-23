@@ -1,176 +1,222 @@
 gsap.registerPlugin(ScrollTrigger);
 
-const graphicScale = 1.5;
-const pinScrollDistance = 300;
-const introRevealStart = 0.4;
-const introRevealEnd = 0.5;
-
-document.documentElement.style.setProperty("--graphic-scale", graphicScale);
-
-const mouseIntensity = 200;
-const mouseScrollActivationEnd = 0.12;
-const scrollMin = 30;
-const scrollMax = 100;
-const enableLayerScrollScale = true;
-const layerScaleMin = 1;
-const layerScaleMax = 1.5;
-const layerQuadrants = [
-  { x: -1, y: -1 },
-  { x: 1, y: -1 },
-  { x: 1, y: 1 },
-];
-
-const graphicLayers = [
-  { selector: ".graphic-stack__layer--violet", color: "#4A04FF" },
-  { selector: ".graphic-stack__layer--pink", color: "#fc0097" },
-  { selector: ".graphic-stack__layer--yellow", color: "#ffff00" },
-  {
-    selector: ".graphic-stack__layer--white",
-    color: "#FFFFFF",
-    stroke: "#FFFFFF",
-  },
-];
-
-async function renderInlineGraphics() {
-  const response = await fetch("assets/graphic.svg");
-  const graphicSvg = await response.text();
-  const parser = new DOMParser();
-  const svgDocument = parser.parseFromString(graphicSvg, "image/svg+xml");
-  const sourceSvg = svgDocument.querySelector("svg");
-
-  if (!sourceSvg) {
-    return;
+function initLenis() {
+  if (!window.Lenis) {
+    return null;
   }
 
-  graphicLayers.forEach(({ selector, color, stroke }) => {
-    const layer = document.querySelector(selector);
-    const svg = sourceSvg.cloneNode(true);
+  const lenis = new Lenis({
+    lerp: 0.09,
+    smoothWheel: true,
+  });
 
-    svg.removeAttribute("width");
-    svg.removeAttribute("height");
-    svg.setAttribute("preserveAspectRatio", "xMidYMid slice");
-    svg.querySelectorAll("[fill]").forEach((node) => {
-      if (node.getAttribute("fill") !== "none") {
-        node.setAttribute("fill", color);
-      }
-    });
+  lenis.on("scroll", ScrollTrigger.update);
 
-    if (stroke) {
-      svg.querySelectorAll("path").forEach((path) => {
-        path.setAttribute("stroke", stroke);
-        path.setAttribute("stroke-width", "2");
-      });
+  gsap.ticker.add((time) => {
+    lenis.raf(time * 1000);
+  });
+
+  gsap.ticker.lagSmoothing(0);
+
+  return lenis;
+}
+
+function initCoverAnimation() {
+  const graphicScale = 1.5;
+  const pinScrollDistance = 200;
+  const introRevealStart = 0.4;
+  const introRevealEnd = 0.5;
+
+  document.documentElement.style.setProperty("--graphic-scale", graphicScale);
+
+  const mouseIntensity = 200;
+  const mouseScrollActivationEnd = 0.12;
+  const scrollMin = 30;
+  const scrollMax = 100;
+  const enableLayerScrollScale = true;
+  const layerScaleMin = 1;
+  const layerScaleMax = 1.5;
+  const layerQuadrants = [
+    { x: -1, y: -1 },
+    { x: 1, y: -1 },
+    { x: 1, y: 1 },
+  ];
+
+  const graphicLayers = [
+    { selector: ".graphic-stack__layer--violet", color: "#4A04FF" },
+    { selector: ".graphic-stack__layer--pink", color: "#fc0097" },
+    { selector: ".graphic-stack__layer--yellow", color: "#ffff00" },
+    {
+      selector: ".graphic-stack__layer--white",
+      color: "#FFFFFF",
+      stroke: "#FFFFFF",
+    },
+  ];
+
+  async function renderInlineGraphics() {
+    const response = await fetch("assets/graphic.svg");
+    const graphicSvg = await response.text();
+    const parser = new DOMParser();
+    const svgDocument = parser.parseFromString(graphicSvg, "image/svg+xml");
+    const sourceSvg = svgDocument.querySelector("svg");
+
+    if (!sourceSvg) {
+      return;
     }
 
-    layer.replaceChildren(svg);
+    graphicLayers.forEach(({ selector, color, stroke }) => {
+      const layer = document.querySelector(selector);
+      const svg = sourceSvg.cloneNode(true);
+
+      if (!layer) {
+        return;
+      }
+
+      svg.removeAttribute("width");
+      svg.removeAttribute("height");
+      svg.setAttribute("preserveAspectRatio", "xMidYMid slice");
+      svg.querySelectorAll("[fill]").forEach((node) => {
+        if (node.getAttribute("fill") !== "none") {
+          node.setAttribute("fill", color);
+        }
+      });
+
+      if (stroke) {
+        svg.querySelectorAll("path").forEach((path) => {
+          path.setAttribute("stroke", stroke);
+          path.setAttribute("stroke-width", "2");
+        });
+      }
+
+      layer.replaceChildren(svg);
+    });
+  }
+
+  renderInlineGraphics();
+
+  const movingLayers = gsap.utils
+    .toArray(".graphic-stack__layer:not(.graphic-stack__layer--white)")
+    .map((layer, index) => {
+      const quadrant = layerQuadrants[index % layerQuadrants.length];
+
+      return {
+        layer,
+        quadrant,
+        mouseX: gsap.quickSetter(layer, "--mouse-x", "px"),
+        mouseY: gsap.quickSetter(layer, "--mouse-y", "px"),
+        scrollX: gsap.quickSetter(layer, "--scroll-x", "px"),
+        scrollY: gsap.quickSetter(layer, "--scroll-y", "px"),
+        scrollScale: gsap.quickSetter(layer, "--layer-scale"),
+        mouseDepth: gsap.utils.random(0.35, 1),
+        scrollTargetX: quadrant.x * gsap.utils.random(scrollMin, scrollMax),
+        scrollTargetY: quadrant.y * gsap.utils.random(scrollMin, scrollMax),
+        scrollTargetScale: gsap.utils.random(layerScaleMin, layerScaleMax),
+      };
+    });
+
+  movingLayers.forEach(({ layer }) => {
+    gsap.set(layer, {
+      "--mouse-x": 0,
+      "--mouse-y": 0,
+      "--scroll-x": 0,
+      "--scroll-y": 0,
+      "--layer-scale": 1,
+    });
   });
-}
 
-renderInlineGraphics();
+  const setIntroClip = gsap.quickSetter(".intro-text", "clipPath");
 
-const movingLayers = gsap.utils
-  .toArray(".graphic-stack__layer:not(.graphic-stack__layer--white)")
-  .map((layer, index) => {
-    const quadrant = layerQuadrants[index % layerQuadrants.length];
+  setIntroClip("inset(100% 0% 0% 0%)");
 
-    return {
-      layer,
-      quadrant,
-      mouseX: gsap.quickSetter(layer, "--mouse-x", "px"),
-      mouseY: gsap.quickSetter(layer, "--mouse-y", "px"),
-      scrollX: gsap.quickSetter(layer, "--scroll-x", "px"),
-      scrollY: gsap.quickSetter(layer, "--scroll-y", "px"),
-      scrollScale: gsap.quickSetter(layer, "--layer-scale"),
-      mouseDepth: gsap.utils.random(0.35, 1),
-      scrollTargetX: quadrant.x * gsap.utils.random(scrollMin, scrollMax),
-      scrollTargetY: quadrant.y * gsap.utils.random(scrollMin, scrollMax),
-      scrollTargetScale: gsap.utils.random(layerScaleMin, layerScaleMax),
-    };
-  });
+  let currentScrollProgress = 0;
+  let pointerX = 0;
+  let pointerY = 0;
 
-movingLayers.forEach(({ layer }) => {
-  gsap.set(layer, {
-    "--mouse-x": 0,
-    "--mouse-y": 0,
-    "--scroll-x": 0,
-    "--scroll-y": 0,
-    "--layer-scale": 1,
-  });
-});
-
-const setIntroClip = gsap.quickSetter(".intro-text", "clipPath");
-
-setIntroClip("inset(100% 0% 0% 0%)");
-
-let currentScrollProgress = 0;
-let pointerX = 0;
-let pointerY = 0;
-
-function updateMouseOffset() {
-  const activationProgress = gsap.utils.clamp(
-    0,
-    1,
-    currentScrollProgress / mouseScrollActivationEnd
-  );
-  const activationEase = gsap.parseEase("power3.in")(activationProgress);
-
-  movingLayers.forEach(({ mouseX, mouseY, mouseDepth, quadrant }) => {
-    mouseX(Math.abs(pointerX) * mouseIntensity * mouseDepth * activationEase * quadrant.x);
-    mouseY(Math.abs(pointerY) * mouseIntensity * mouseDepth * activationEase * quadrant.y);
-  });
-}
-
-window.addEventListener("mousemove", (event) => {
-  pointerX = event.clientX / window.innerWidth - 0.5;
-  pointerY = event.clientY / window.innerHeight - 0.5;
-
-  updateMouseOffset();
-});
-
-ScrollTrigger.create({
-  trigger: ".pin-section",
-  start: "top top",
-  end: `+=${pinScrollDistance}%`,
-  pin: true,
-  scrub: true,
-  onUpdate: ({ progress }) => {
-    const revealProgress = gsap.utils.clamp(
+  function updateMouseOffset() {
+    const activationProgress = gsap.utils.clamp(
       0,
       1,
-      (progress - introRevealStart) / (introRevealEnd - introRevealStart)
+      currentScrollProgress / mouseScrollActivationEnd
     );
-    const topClip = 100 - revealProgress * 100;
+    const activationEase = gsap.parseEase("power3.in")(activationProgress);
 
-    setIntroClip(`inset(${topClip}% 0% 0% 0%)`);
-  },
-});
+    movingLayers.forEach(({ mouseX, mouseY, mouseDepth, quadrant }) => {
+      mouseX(Math.abs(pointerX) * mouseIntensity * mouseDepth * activationEase * quadrant.x);
+      mouseY(Math.abs(pointerY) * mouseIntensity * mouseDepth * activationEase * quadrant.y);
+    });
+  }
 
-ScrollTrigger.create({
-  trigger: ".page",
-  start: "top top",
-  end: `+=${pinScrollDistance}%`,
-  scrub: true,
-  onUpdate: ({ progress }) => {
-    currentScrollProgress = progress;
-    updateMouseOffset();
+  // window.addEventListener("mousemove", (event) => {
+  //   pointerX = event.clientX / window.innerWidth - 0.5;
+  //   pointerY = event.clientY / window.innerHeight - 0.5;
 
-    movingLayers.forEach(
-      ({
-        scrollX,
-        scrollY,
-        scrollScale,
-        scrollTargetX,
-        scrollTargetY,
-        scrollTargetScale,
-      }) => {
-        scrollX(scrollTargetX * progress);
-        scrollY(scrollTargetY * progress);
-        scrollScale(
-          enableLayerScrollScale
-            ? gsap.utils.interpolate(1, scrollTargetScale, progress)
-            : 1
-        );
-      }
-    );
-  },
-});
+  //   updateMouseOffset();
+  // });
+
+  ScrollTrigger.create({
+    trigger: ".pin-section",
+    start: "top top",
+    end: `+=${pinScrollDistance}%`,
+    pin: true,
+    scrub: true,
+    onUpdate: ({ progress }) => {
+      const revealProgress = gsap.utils.clamp(
+        0,
+        1,
+        (progress - introRevealStart) / (introRevealEnd - introRevealStart)
+      );
+      const topClip = 100 - revealProgress * 100;
+
+      setIntroClip(`inset(${topClip}% 0% 0% 0%)`);
+    },
+  });
+
+  ScrollTrigger.create({
+    trigger: ".page",
+    start: "top top",
+    end: `+=${pinScrollDistance}%`,
+    scrub: true,
+    onUpdate: ({ progress }) => {
+      currentScrollProgress = progress;
+      updateMouseOffset();
+
+      movingLayers.forEach(
+        ({
+          scrollX,
+          scrollY,
+          scrollScale,
+          scrollTargetX,
+          scrollTargetY,
+          scrollTargetScale,
+        }) => {
+          scrollX(scrollTargetX * progress);
+          scrollY(scrollTargetY * progress);
+          scrollScale(
+            enableLayerScrollScale
+              ? gsap.utils.interpolate(1, scrollTargetScale, progress)
+              : 1
+          );
+        }
+      );
+    },
+  });
+}
+
+function initCapabilitySections() {
+  gsap.utils.toArray(".cap-section").forEach((section) => {
+    ScrollTrigger.create({
+      trigger: section,
+      start: "top top",
+      // end: "+=400%",
+      // pin: true,
+      onEnter: () => section.classList.add("section-active"),
+      onEnterBack: () => section.classList.add("section-active"),
+      onLeave: () => section.classList.remove("section-active"),
+      onLeaveBack: () => section.classList.remove("section-active"),
+    });
+  });
+}
+
+initLenis();
+initCoverAnimation();
+initCapabilitySections();

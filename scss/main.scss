@@ -109,7 +109,7 @@ p {
 }
 
 .graphic-stack__layer--white {
-	opacity: 1;
+	opacity: .99;
 	mix-blend-mode: normal;
 }
 
@@ -123,9 +123,9 @@ p {
 	z-index: 9;
 	font-size: fluid-size(20px, 36px);
 }
-.graphic-stack__layer--white {
-	opacity: 0.98;
-}
+// .graphic-stack__layer--white {
+// 	opacity: 0.98;
+// }
 
 .intro-text {
 	font-size: fluid-size(42px, 80px);
@@ -150,7 +150,7 @@ h1 {
 
 // Cap Section
 .cap-section {
-	--duration: 0.2s;
+	--duration: 0.05s;
 	padding: var(--sp-md);
 	min-height: 150dvh;
 	will-change: color, background;
@@ -160,12 +160,17 @@ h1 {
 
 	& .cap-heading :is(strong, em) {
 		color: $paper;
+		display: inline-block;
+		max-width: 0;
+		transition: max-width .5s ease-out;
+		overflow: hidden;
+		height: .925em;
 	}
 
 	&.section-active {
-		// & .cap-heading strong{
-		// 	width: auto;
-		// }
+		& .cap-heading :is(strong, em){
+			max-width: 100%;
+		}
 		&.bg-violet {
 			background-color: $violet;
 			color: $paper;
@@ -250,6 +255,14 @@ h1 {
 		border: 1px solid;
 		padding: var(--sp-md);
 		align-content: end;
+		--nudge-angle: 0deg;
+		--nudge-scale-x: 1;
+		--nudge-scale-y: 1;
+		--nudge-blur: 0px;
+		transform: rotate(var(--nudge-angle)) scale(var(--nudge-scale-x), var(--nudge-scale-y))
+			rotate(calc(var(--nudge-angle) * -1));
+		filter: blur(var(--nudge-blur));
+		will-change: transform, filter;
 	}
 	@media screen and (max-width: 900px) {
 		grid-template-columns: repeat(3, 1fr);

@@ -217,6 +217,75 @@ function initCapabilitySections() {
   });
 }
 
+function initServiceGridNudge() {
+  const desktopPointer = window.matchMedia("(hover: hover) and (pointer: fine)");
+
+  if (!desktopPointer.matches) {
+    return;
+  }
+
+  const maxStretch = 0.25;
+  const maxBlur = 6;
+  const speedReference = 1.2; // px/ms of pointer movement that maps to the full effect
+
+  gsap.utils.toArray(".service-grid li").forEach((item) => {
+    const state = { angle: 0, scaleX: 1, scaleY: 1, blur: 0 };
+    let lastX = 0;
+    let lastY = 0;
+    let lastTime = 0;
+
+    const applyState = () => {
+      item.style.setProperty("--nudge-angle", `${state.angle}deg`);
+      item.style.setProperty("--nudge-scale-x", state.scaleX);
+      item.style.setProperty("--nudge-scale-y", state.scaleY);
+      item.style.setProperty("--nudge-blur", `${state.blur}px`);
+    };
+
+    item.addEventListener("pointerenter", (event) => {
+      lastX = event.clientX;
+      lastY = event.clientY;
+      lastTime = performance.now();
+    });
+
+    item.addEventListener("pointermove", (event) => {
+      const now = performance.now();
+      const dt = Math.max(now - lastTime, 1);
+      const dx = event.clientX - lastX;
+      const dy = event.clientY - lastY;
+      const speed = Math.min(Math.hypot(dx, dy) / dt / speedReference, 1);
+      const angle = (Math.atan2(dy, dx) * 180) / Math.PI;
+
+      lastX = event.clientX;
+      lastY = event.clientY;
+      lastTime = now;
+
+      gsap.to(state, {
+        angle,
+        scaleX: 1 + speed * maxStretch,
+        scaleY: 1 - speed * maxStretch * 0.5,
+        blur: speed * maxBlur,
+        duration: 0.4,
+        ease: "power3.out",
+        overwrite: true,
+        onUpdate: applyState,
+      });
+    });
+
+    item.addEventListener("pointerleave", () => {
+      gsap.to(state, {
+        scaleX: 1,
+        scaleY: 1,
+        blur: 0,
+        duration: 0.8,
+        ease: "elastic.out(1, 0.4)",
+        overwrite: true,
+        onUpdate: applyState,
+      });
+    });
+  });
+}
+
 initLenis();
 initCoverAnimation();
 initCapabilitySections();
+initServiceGridNudge();

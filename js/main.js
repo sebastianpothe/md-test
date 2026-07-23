@@ -7,10 +7,13 @@ const introRevealEnd = 0.5;
 
 document.documentElement.style.setProperty("--graphic-scale", graphicScale);
 
-const mouseIntensity = 100;
+const mouseIntensity = 200;
 const mouseScrollActivationEnd = 0.12;
 const scrollMin = 30;
 const scrollMax = 100;
+const enableLayerScrollScale = true;
+const layerScaleMin = 1;
+const layerScaleMax = 1.5;
 const layerQuadrants = [
   { x: -1, y: -1 },
   { x: 1, y: -1 },
@@ -77,9 +80,11 @@ const movingLayers = gsap.utils
       mouseY: gsap.quickSetter(layer, "--mouse-y", "px"),
       scrollX: gsap.quickSetter(layer, "--scroll-x", "px"),
       scrollY: gsap.quickSetter(layer, "--scroll-y", "px"),
+      scrollScale: gsap.quickSetter(layer, "--layer-scale"),
       mouseDepth: gsap.utils.random(0.35, 1),
       scrollTargetX: quadrant.x * gsap.utils.random(scrollMin, scrollMax),
       scrollTargetY: quadrant.y * gsap.utils.random(scrollMin, scrollMax),
+      scrollTargetScale: gsap.utils.random(layerScaleMin, layerScaleMax),
     };
   });
 
@@ -89,6 +94,7 @@ movingLayers.forEach(({ layer }) => {
     "--mouse-y": 0,
     "--scroll-x": 0,
     "--scroll-y": 0,
+    "--layer-scale": 1,
   });
 });
 
@@ -108,9 +114,9 @@ function updateMouseOffset() {
   );
   const activationEase = gsap.parseEase("power3.in")(activationProgress);
 
-  movingLayers.forEach(({ mouseX, mouseY, mouseDepth }) => {
-    mouseX(pointerX * -mouseIntensity * mouseDepth * activationEase);
-    mouseY(pointerY * -mouseIntensity * mouseDepth * activationEase);
+  movingLayers.forEach(({ mouseX, mouseY, mouseDepth, quadrant }) => {
+    mouseX(Math.abs(pointerX) * mouseIntensity * mouseDepth * activationEase * quadrant.x);
+    mouseY(Math.abs(pointerY) * mouseIntensity * mouseDepth * activationEase * quadrant.y);
   });
 }
 
@@ -148,9 +154,23 @@ ScrollTrigger.create({
     currentScrollProgress = progress;
     updateMouseOffset();
 
-    movingLayers.forEach(({ scrollX, scrollY, scrollTargetX, scrollTargetY }) => {
-      scrollX(scrollTargetX * progress);
-      scrollY(scrollTargetY * progress);
-    });
+    movingLayers.forEach(
+      ({
+        scrollX,
+        scrollY,
+        scrollScale,
+        scrollTargetX,
+        scrollTargetY,
+        scrollTargetScale,
+      }) => {
+        scrollX(scrollTargetX * progress);
+        scrollY(scrollTargetY * progress);
+        scrollScale(
+          enableLayerScrollScale
+            ? gsap.utils.interpolate(1, scrollTargetScale, progress)
+            : 1
+        );
+      }
+    );
   },
 });

@@ -78,10 +78,13 @@ img {
 	--mouse-y: 0px;
 	--scroll-x: 0px;
 	--scroll-y: 0px;
+	--layer-scale: 1;
 
-	opacity: 0.9;
+	opacity: 0.98;
 	mix-blend-mode: multiply;
-	transform: translate(calc(var(--scroll-x) + var(--mouse-x)), calc(var(--scroll-y) + var(--mouse-y)));
+	transform:
+		translate(calc(var(--scroll-x) + var(--mouse-x)), calc(var(--scroll-y) + var(--mouse-y)))
+		scale(var(--layer-scale));
 
 	svg {
 		width: 100%;
@@ -114,8 +117,11 @@ img {
 	font-size: fluid-size(20px, 36px);
 	// color: white;
 }
+.graphic-stack__layer--white{
+	opacity: .98;
+}
 .intro-text {
-	font-size: fluid-size(48px, 80px);
+	font-size: fluid-size(42px, 80px);
 	position: absolute;
 	z-index: 12;
 	max-width: 10em;

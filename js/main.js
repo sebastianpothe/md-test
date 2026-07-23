@@ -23,11 +23,12 @@ function initLenis() {
 
 function initCoverAnimation() {
   const graphicScale = 1.5;
-  const pinScrollDistance = 200;
+  const pinScrollDistance = 300;
   const introRevealStart = 0.4;
   const introRevealEnd = 0.5;
-
-  document.documentElement.style.setProperty("--graphic-scale", graphicScale);
+  const introHoldEnd = 0.9;
+  const introHideEnd = 1;
+  
 
   const mouseIntensity = 200;
   const mouseScrollActivationEnd = 0.12;
@@ -35,12 +36,14 @@ function initCoverAnimation() {
   const scrollMax = 100;
   const enableLayerScrollScale = true;
   const layerScaleMin = 1;
-  const layerScaleMax = 1.5;
+  const layerScaleMax = 1.15;
   const layerQuadrants = [
     { x: -1, y: -1 },
     { x: 1, y: -1 },
     { x: 1, y: 1 },
   ];
+
+  document.documentElement.style.setProperty("--graphic-scale", graphicScale);
 
   const graphicLayers = [
     { selector: ".graphic-stack__layer--violet", color: "#4A04FF" },
@@ -124,9 +127,25 @@ function initCoverAnimation() {
     });
   });
 
-  const setIntroClip = gsap.quickSetter(".intro-text", "clipPath");
+  const introTimeline = gsap.timeline({ paused: true });
 
-  setIntroClip("inset(100% 0% 0% 0%)");
+  introTimeline
+    .set(".intro-text", { clipPath: "inset(100% 0% 0% 0%)" })
+    .to(".intro-text", {
+      clipPath: "inset(0% 0% 0% 0%)",
+      duration: introRevealEnd - introRevealStart,
+      ease: "none",
+    })
+    .to(".intro-text", {
+      clipPath: "inset(0% 0% 0% 0%)",
+      duration: introHoldEnd - introRevealEnd,
+      ease: "none",
+    })
+    .to(".intro-text", {
+      clipPath: "inset(0% 0% 100% 0%)",
+      duration: introHideEnd - introHoldEnd,
+      ease: "none",
+    });
 
   let currentScrollProgress = 0;
   let pointerX = 0;
@@ -160,14 +179,13 @@ function initCoverAnimation() {
     pin: true,
     scrub: true,
     onUpdate: ({ progress }) => {
-      const revealProgress = gsap.utils.clamp(
+      const introProgress = gsap.utils.clamp(
         0,
         1,
-        (progress - introRevealStart) / (introRevealEnd - introRevealStart)
+        (progress - introRevealStart) / (introHideEnd - introRevealStart)
       );
-      const topClip = 100 - revealProgress * 100;
 
-      setIntroClip(`inset(${topClip}% 0% 0% 0%)`);
+      introTimeline.progress(introProgress);
     },
   });
 
@@ -225,8 +243,8 @@ function initServiceGridNudge() {
   }
 
   const maxStretch = 0.25;
-  const maxBlur = 6;
-  const speedReference = 1.2; // px/ms of pointer movement that maps to the full effect
+  const maxBlur = 2;
+  const speedReference = 1; // px/ms of pointer movement that maps to the full effect
 
   gsap.utils.toArray(".service-grid li").forEach((item) => {
     const state = { angle: 0, scaleX: 1, scaleY: 1, blur: 0 };

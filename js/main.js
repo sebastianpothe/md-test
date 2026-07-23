@@ -1,7 +1,7 @@
 gsap.registerPlugin(ScrollTrigger);
 
 const graphicScale = 1.5;
-const pinScrollDistance = 500;
+const pinScrollDistance = 300;
 const introRevealStart = 0.4;
 const introRevealEnd = 0.5;
 

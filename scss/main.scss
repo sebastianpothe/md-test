@@ -124,11 +124,13 @@ p {
 	position: fixed;
 	align-content: center;
 	writing-mode: sideways-lr;
-	mix-blend-mode: multiply;
+	// mix-blend-mode: multiply;
 	right: var(--sp-md);
 	bottom: var(--sp-md);
 	z-index: 9;
 	font-size: fluid-size(20px, 36px);
+	background-color: $white;
+	padding: 1em .5em ;
 }
 // .graphic-stack__layer--white {
 // 	opacity: 0.98;

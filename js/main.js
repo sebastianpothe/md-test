@@ -22,7 +22,7 @@ function initLenis() {
 }
 
 function initCoverAnimation() {
-  const graphicScale = 1.5;
+  const graphicScale = 2.5;
   const pinScrollDistance = 300;
   const introRevealStart = 0.4;
   const introRevealEnd = 0.5;

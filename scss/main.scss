@@ -2,8 +2,8 @@
 
 $ink: #151318;
 $paper: #ffffff;
-$pink: #d60080;
-$violet: #4a04ff;
+$magenta: #d60080;
+$blue: #4a04ff;
 $yellow: #d6d600;
 $white: #ffffff;
 $grey: hsl(250, 8%, 75%);
@@ -50,7 +50,7 @@ $grey: hsl(250, 8%, 75%);
 body {
 	min-width: 320px;
 	overflow-x: hidden;
-	color: $violet;
+	color: $blue;
 	line-height: 1.1;
 	font-size: var(--fz-base);
 }
@@ -63,6 +63,13 @@ img {
 p {
 	max-width: 35em;
 }
+:is(h1, h2, h3, h4, h5, h6) {
+	text-transform: uppercase;
+	letter-spacing: -0.01em;
+	font-weight: normal;
+	line-height: 1;
+}
+
 .page {
 	min-height: 400vh;
 }
@@ -109,7 +116,7 @@ p {
 }
 
 .graphic-stack__layer--white {
-	opacity: .99;
+	opacity: 0.99;
 	mix-blend-mode: normal;
 }
 
@@ -139,11 +146,13 @@ p {
 	align-content: space-between;
 	clip-path: inset(100% 0 0 0);
 	will-change: clip-path;
+	& h1 {
+		font-size: fluid-size(42px, 70px);
+		margin: 0;
+		line-height: 1;
+	}
 }
-h1 {
-	font-size: fluid-size(42px, 82px);
-	margin: 0;
-}
+
 .logo {
 	width: 250px;
 }
@@ -158,21 +167,23 @@ h1 {
 		color var(--duration) ease-in-out,
 		background var(--duration) ease-in-out;
 
-	& .cap-heading :is(strong, em) {
-		color: $paper;
-		display: inline-block;
-		max-width: 0;
-		transition: max-width .5s ease-out;
-		overflow: hidden;
-		height: .925em;
-	}
-
 	&.section-active {
-		& .cap-heading :is(strong, em){
-			max-width: 100%;
+		& .cap-heading :is(strong, em) {
+			// max-width: 100%;
+			// display: inline-block;
+			visibility: visible;
 		}
-		&.bg-violet {
-			background-color: $violet;
+		&.bg-blue {
+			background-color: $blue;
+			color: $paper;
+			& .cap-heading {
+				& strong {
+					color: $ink;
+				}
+			}
+		}
+		&.bg-magenta {
+			background-color: $magenta;
 			color: $paper;
 			& .cap-heading {
 				& strong {
@@ -197,7 +208,7 @@ h1 {
 			color: $paper;
 			& .cap-heading {
 				& strong {
-					color: $violet;
+					color: $blue;
 				}
 				& em {
 					color: inherit;
@@ -213,6 +224,13 @@ h1 {
 	align-items: baseline;
 	gap: 0.25em var(--sp-md);
 	margin-block: 40dvh 20dvh;
+	& :is(strong, em) {
+		color: $paper;
+		visibility: hidden;
+	}
+	& em {
+		// transition-delay: 0.25s;
+	}
 	& span {
 		font-size: 1.2rem;
 		position: relative;
@@ -221,9 +239,8 @@ h1 {
 	}
 	& h2 {
 		margin: 0;
-		font-weight: normal;
-		text-transform: uppercase;
-		font-size: fluid-size(28px, 65px);
+		line-height: 0.9;
+		font-size: fluid-size(50px, 170px);
 	}
 	& :is(strong, em) {
 		// font-weight: inherit;
@@ -272,18 +289,18 @@ h1 {
 	}
 }
 
-section.image{
+section.image {
 	height: 100dvh;
 	overflow: hidden;
 	position: relative;
 	color: $paper;
 	font-size: var(--fz-xs);
 	line-height: 1.4;
-	& .funfact{
+	& .funfact {
 		position: absolute;
 		inset: auto var(--sp-md) var(--sp-md) var(--sp-md);
 		z-index: 10;
-		& p{
+		& p {
 			max-width: none;
 		}
 	}

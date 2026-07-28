@@ -46,8 +46,8 @@ function initCoverAnimation() {
   document.documentElement.style.setProperty("--graphic-scale", graphicScale);
 
   const graphicLayers = [
-    { selector: ".graphic-stack__layer--violet", color: "#4A04FF" },
-    { selector: ".graphic-stack__layer--pink", color: "#fc0097" },
+    { selector: ".graphic-stack__layer--blue", color: "#4A04FF" },
+    { selector: ".graphic-stack__layer--magenta", color: "#fc0097" },
     { selector: ".graphic-stack__layer--yellow", color: "#ffff00" },
     {
       selector: ".graphic-stack__layer--white",
